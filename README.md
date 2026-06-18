@@ -27,8 +27,8 @@ Wenn du dir das Code nur anschauen möchtest, kannst du das direkt hier auf GitH
 
 1. Klone das Repository:
 ```bash
-git clone https://github.com/yourusername/your-repo.git
-cd your-repo
+git clone https://github.com/SerhatKaraarslann/neural-network-from-scratch.git
+cd neural-network-from-scratch
 ```
 2. Virtuelle Umgebung erstellen:
 Falls du uv noch nicht hast, installiere es (z.B. via curl -LsSf https://astral.sh/uv/install.sh | sh auf Mac/Linux oder powershell -c "irm https://astral.sh/uv/install.ps1 | iex" auf Windows).
