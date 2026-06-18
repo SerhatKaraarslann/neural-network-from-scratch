@@ -23,12 +23,24 @@ class Activation_ReLU:
 
         # np.max vergelicht jeden Wert in inputs mit 0.
         # Wenn der Wert größer als 0 ist, wird er beibehalten. Ist er <= 0, wird er zu 0.
-        self.output = np.max(0, inputs) # Elementweise Anwendung der ReLU-Funktion
+        self.output = np.maximum(0, inputs) # Elementweise Anwendung der ReLU-Funktion
 
         return self.output
     
-    def backward(self):
-        pass
+    def backward(self, dvalues):
+        """
+        Rückwärtsdurchlauf der ReLU-Aktivierungsfunktion.
+        Hier berechnen wir die Gradienten für die Eingänge basierend auf den Gradienten der Ausgabe (dvalues).
+        :param dvalues: Die Gradienten(Fehlerwerte) der Ausgabe, die von der nächsten Schicht zurückgegeben werden.
+        """
+        # Wir machen eine Kopie der Gradienten der Ausgabe, damit wir sie modifizieren können, ohne die Originalwerte zu verändern.
+        self.dinputs = dvalues.copy()
+
+        # wenn der Input damals beim Vorwärtsdurchlauf kleiner oder gleich 0 war,
+        # war das Neuron ausgeschaltet und hat keinen Einfluss auf die Ausgabe gehabt. 
+        # Daher setzen wir den Gradienten für diese Eingänge auf 0.
+        self.dinputs[self.input <= 0] = 0
+
 
 class Activation_Softmax:
     """

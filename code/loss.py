@@ -33,7 +33,8 @@ class Loss_CategoricalCrossentropy(Loss):
     Anwendung: Häufig in Kombination mit der Softmax-Aktivierungsfunktion in der Output Layer verwendet, um die Differenz zwischen den vorhergesagten Wahrscheinlichkeiten und den tatsächlichen Klassenlabels zu messen.
     Methods:
     forward: Methode für die Vorwärtsausbreitung, die die Ausgabe des Layers berechnet.
-    """
+    backward: Methode für die Rückwärtsausbreitung, die die Gradienten für die Gewichte und Biases berechnet.
+     """
 
     def forward(self, y_predicted, y_true):
         """
@@ -70,4 +71,31 @@ class Loss_CategoricalCrossentropy(Loss):
 
         return negative_log
     
-    
+    def backward(self, dvalues, y_true):
+        """
+        Rückwärtsdurchlauf der kategorischen Kreuzentropie-Verlustfunktion, für Loss und Softmax kombiniert.
+        Dies ist der Startschuss für die Backpropagation.
+        Hier berechnen wir die Gradienten für die Eingänge basierend auf den Gradienten der Ausgabe (dvalues) und den tatsächlichen Labels (y_true).
+        :param dvalues: Die Gradienten(Fehlerwerte) der Ausgabe, die von der nächsten Schicht zurückgegeben werden.
+        :param y_true: Die tatsächlichen, echten Antorten (Labels).
+        """
+
+        # Anzahl der Samples in der Batch, wie viele Vorhersagen wir haben.
+        samples = len(dvalues)
+
+        # wenn die Labels als One-Hot-Vektoren(2D) vorliegen, 
+        # wandeln wir sie in einfache Klassenindizes(1D) um, damit wir die Gradienten korrekt berechnen können.
+        if len(y_true.shape) == 2:
+            y_true = np.argmax(y_true, axis=1)
+
+        # Wir machen eine Kopie der Gradienten der Ausgabe, damit wir sie modifizieren können, ohne die Originalwerte zu verändern.
+        self.dinputs = dvalues.copy()
+
+        # Softmax und Cross-Entropy zusammen:
+        # Wenn wir die Softmax-Aktivierungsfunktion in der Output Layer verwenden und die kategorische Kreuzentropie als Verlustfunktion, 
+        # können wir die Gradienten für die Eingänge direkt berechnen, indem wir die Vorhersagen (dvalues) von den tatsächlichen Labels (y_true) subtrahieren.
+        # Dies ist eine mathematische Vereinfachung, die sich aus der Kombination von Softmax und Kreuzentropie ergibt.
+        self.dinputs[range(samples), y_true] -= 1
+
+        # Wir teilen die Gradienten durch die Anzahl der Samples, um den Durchschnittsgradienten zu erhalten.
+        self.dinputs /= samples

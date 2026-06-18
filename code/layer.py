@@ -35,5 +35,17 @@ class Layer_Dense:
         return self.output
         
     
-    def backward(self):
-        pass
+    def backward(self, dvalues):
+        """
+        Rückwärtsdurchlauf der Dense Layer. Hier werden die Gradienten für die Gewichte und Biases berechnet, basierend auf den Gradienten der Ausgabe (dvalues).
+        :param dvalues : Die Gradienten(Fehlerwerte) der Ausgabe, die von der nächsten Schicht zurückgegeben werden. d steht für "derivative" oder "difference".
+        """
+
+        # Gradienten für die Gewichte: dvalues (Fehler der Ausgabe) multipliziert mit den Eingängen (inputs) transponiert
+        self.dweights = np.dot(self.inputs.T, dvalues)
+
+        # Gradienten für die Biases: Summe der Gradienten der Ausgabe
+        self.dbiases = np.sum(dvalues, axis=0, keepdims=True)
+
+        # Fehler an die vorherige Shicht weitergeben: dvalues (Fehler der Ausgabe) multipliziert mit den Gewichten transponiert
+        self.dinputs = np.dot(dvalues, self.weights.T)
