@@ -44,6 +44,7 @@ Mac/Linux: source .venv/bin/activate
 4. Abhängigkeiten installieren:
 ```bash
 uv add numpy
+uv add tensorflow # Nur für den MNIST-Datensatz, kein TensorFlow-Code im Netzwerk selbst!
 ```
 5. Das Neuronale Netzwerk ausführen:
 ```bash
